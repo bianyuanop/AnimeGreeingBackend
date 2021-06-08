@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Signature</title>
+	<style>
+		html, body {
+			height: 100%;
+			overflow: hidden;
+		}
+		.canvas {
+			width: 100%;
+			height: 100%;
+
+			position: relative;
+		}
+		.confirm, .rewrite {
+			position: absolute;
+			top: 95%;
+
+			background: rgba(130, 171, 190, 0.699);
+			border-radius: 2px;
+
+			color: white;
+		}
+		.confirm:hover, .rewrite:hover {
+			cursor: pointer;
+		}
+		.confirm {
+			right: 10%;
+		}
+		.rewrite {
+			right: 5%;
+		}
+		canvas {
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div class="canvas">
+		<canvas></canvas>
+		<div class="confirm" onclick="confirmHandler()">Confirm</div>
+		<div class="rewrite" onclick="rewriteHandler()">Rewrite</div>
+	</div>
+	<script>
+		var rqPrefix = 'http://127.0.0.1:5000';
+		var canvasContent = null;
+
+		function confirmHandler() {
+			if(!canvasContent) {
+				console.log("Empty canvas");
+				return;
+			}
+
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					console.log("ready");
+				}
+			};
+			xhttp.open("GET", rqPrefix + '/', true);
+			xhttp.send();
+		}
+		function rewriteHandler() {
+			canvasContent = null;
+		}
+
+		function canvasContent2dataurl() {
+
+		}
+	</script>
+</body>
+</html>
