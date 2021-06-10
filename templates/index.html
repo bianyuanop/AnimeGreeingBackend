@@ -45,31 +45,57 @@
 		<div class="rewrite" onclick="rewriteHandler()">Rewrite</div>
 	</div>
 	<script>
-		var rqPrefix = 'http://127.0.0.1:5000';
-		var canvasContent = null;
+var rqPrefix = 'http://127.0.0.1:5000';
+var canvasContent = null;
+var canvas = document.querySelector('canvas');
+var context = canvas.getContext('2d');
 
-		function confirmHandler() {
-			if(!canvasContent) {
-				console.log("Empty canvas");
-				return;
-			}
+canvas.onclick = mouseMoveHandler;
 
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					console.log("ready");
-				}
-			};
-			xhttp.open("GET", rqPrefix + '/', true);
-			xhttp.send();
+
+function confirmHandler() {
+	if(!canvasContent) {
+		console.log("Empty canvas");
+		return;
+	}
+
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			console.log("ready");
 		}
-		function rewriteHandler() {
-			canvasContent = null;
-		}
+	};
+	xhttp.open("GET", rqPrefix + '/', true);
+	xhttp.send();
+}
 
-		function canvasContent2dataurl() {
+function rewriteHandler() {
+	context.clearRect(0, 0, canvas.width, canvas.height);
+}
 
-		}
+function canvasContent2dataurl() {
+
+}
+
+function mouseMoveHandler(event) {
+	function drawFilledCircle(x, y) {
+		var rect = canvas.getBoundingClientRect();
+		var posx = x - rect.left;
+		var posy = y - rect.top;
+
+		console.log(rect, posx, posy);
+
+		context.fillStyle = "#000000";
+		context.beginPath();
+		context.arc(posx, posy, 50, 0, 2 * Math.PI);
+		context.fill();
+	}
+
+	drawFilledCircle(event.clientX, event.clientY);
+//	if(event.buttons) { 
+//		drawFilledCircle(event.clientX, event.clientY);
+//	}
+}
 	</script>
 </body>
 </html>
