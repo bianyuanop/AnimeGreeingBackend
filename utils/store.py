@@ -2,7 +2,9 @@ import base64
 import pymongo
 from termcolor import colored
 
-client = pymongo.MongoClient("mongodb://localhost:27017/")
+DB_CONF = {
+    'name': 'iamges'
+}
 
 def imageEntity2dataUri(imgBuf, imgType):
     
@@ -28,22 +30,31 @@ def dataUri2ImgEntity(uri):
             f.write(plainData)
             print(colored('[INFO]', 'green'), "image decoded wrote to /tmp")
 
-def retriveDataURI():
-    pass
+def createDBConn(db, addr="mongodb://localhost:27017/"):
+    client = pymongo.MongoClient(addr)
+    return client[db]
 
-def insertDataURI(uri):
-    pass
+
+def retriveDataURI(_id, mongo_col):
+    res = []
+    query = mongo_col.find({'_id': _id})
+    for x in query:
+        res.append(x['uri'])
+    return res
+
+def insertDataURI(uri, mongo_col):
+    x = mongo_col.insert_one({'uri': uri})
+    return x.inserted_id
+
+def insertMultipleDataURI(uris, mongo_col):
+    x = mongo_col.insert_many(uris)
+    return x.inserted_ids
     
 
 if __name__ == '__main__':
-    origin = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
-    dataUri2ImgEntity(origin)
-
-    with open('/tmp/tempImage.png', 'rb') as f:
-        buf = f.read()
-
-    dataURI = imageEntity2dataUri(buf, 'png')
-
-    print(origin)
-    print(dataURI)
-    print(origin == dataURI)
+    mydb = createDBConn('animePrj')
+    mycol = mydb['images']
+    
+    _id = insertDataURI('test', mycol)
+    datauri = retriveDataURI(_id, mycol)
+    print(datauri)
